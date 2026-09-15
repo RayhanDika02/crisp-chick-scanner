@@ -300,46 +300,19 @@ function onScanSuccess(
    SEND BARCODE TO APPS SCRIPT
 ========================================================= */
 
-function sendBarcode(barcode) {
+function(decodedText) {
 
-  if (
-    window.opener &&
-    !window.opener.closed
-  ) {
+    if (window.opener) {
 
-    window.opener.postMessage(
+        window.opener.postMessage(
+            {
+                type: "CRISP_CHICK_BARCODE",
+                code: decodedText
+            },
+            "*"
+        );
 
-      {
-        type:
-          'CRISP_CHICK_BARCODE',
-
-        code:
-          barcode
-      },
-
-      'https://script.google.com'
-
-    );
-
-    document
-      .getElementById('status')
-      .textContent =
-      'Barcode dikirim ke aplikasi Crisp Chick.';
-
-    setTimeout(function() {
-
-      window.close();
-
-    }, 800);
-
-  } else {
-
-    document
-      .getElementById('status')
-      .textContent =
-      'Scanner dibuka langsung. Tidak ada aplikasi tujuan.';
-
-  }
+    }
 
 }
 
