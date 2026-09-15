@@ -1,14 +1,20 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
   <meta charset="UTF-8">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Crisp Chick Scanner</title>
 
+  <!-- BARCODE SCANNER -->
   <script src="https://unpkg.com/html5-qrcode"></script>
+
 
   <style>
 
@@ -17,290 +23,637 @@
     }
 
     body {
+
       margin: 0;
+
       min-height: 100vh;
-      font-family: Arial, sans-serif;
-      background: #111;
+
+      background:
+        linear-gradient(
+          135deg,
+          #111111,
+          #1b1b1b
+        );
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
       color: white;
+
       display: flex;
+
       justify-content: center;
+
       align-items: center;
+
+      padding: 20px;
+
     }
 
-    .container {
+
+    .app {
+
       width: 100%;
-      max-width: 500px;
-      padding: 20px;
+
+      max-width: 520px;
+
       text-align: center;
+
     }
+
+
+    /* =========================
+       LOGO
+    ========================= */
 
     .logo {
-      width: 130px;
-      max-width: 60%;
-      margin-bottom: 15px;
-      border-radius: 15px;
+
+      width: 120px;
+
+      height: 120px;
+
+      object-fit: contain;
+
+      border-radius: 20px;
+
+      margin-bottom: 12px;
+
     }
 
-    h1 {
-      margin: 5px 0;
+
+    .brand {
+
       font-size: 28px;
-      font-weight: 800;
+
+      font-weight: 900;
+
+      letter-spacing: 2px;
+
+      margin-bottom: 5px;
+
     }
+
 
     .subtitle {
+
       color: #aaa;
+
+      font-size: 14px;
+
       margin-bottom: 25px;
+
     }
 
-    .scanner-box {
-      background: #1b1b1b;
-      border-radius: 22px;
-      padding: 15px;
-      box-shadow: 0 15px 40px rgba(0,0,0,.5);
+
+    /* =========================
+       SCANNER CARD
+    ========================= */
+
+    .card {
+
+      background: #202020;
+
+      border-radius: 25px;
+
+      padding: 18px;
+
+      box-shadow:
+        0 20px 50px
+        rgba(0,0,0,.55);
+
     }
+
+
+    .camera-title {
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+      margin-bottom: 15px;
+
+    }
+
 
     #reader {
+
       width: 100%;
+
       overflow: hidden;
-      border-radius: 15px;
+
+      border-radius: 18px;
+
+      background: #000;
+
     }
+
+
+    /* =========================
+       STATUS
+    ========================= */
 
     .status {
-      margin-top: 20px;
-      padding: 14px;
-      border-radius: 12px;
-      background: #252525;
-      font-size: 14px;
+
+      margin-top: 18px;
+
+      background: #151515;
+
+      border-radius: 15px;
+
+      padding: 15px;
+
     }
 
-    .code {
-      margin-top: 10px;
-      font-size: 22px;
-      font-weight: bold;
-      word-break: break-all;
+
+    .status-label {
+
+      color: #999;
+
+      font-size: 12px;
+
+      margin-bottom: 6px;
+
     }
+
+
+    #result {
+
+      font-size: 21px;
+
+      font-weight: 800;
+
+      word-break: break-all;
+
+    }
+
+
+    /* =========================
+       SUCCESS
+    ========================= */
+
+    .success {
+
+      display: none;
+
+      margin-top: 15px;
+
+      padding: 15px;
+
+      border-radius: 15px;
+
+      background: #173b22;
+
+      color: #8cffad;
+
+      font-weight: bold;
+
+    }
+
+
+    /* =========================
+       BUTTON
+    ========================= */
 
     button {
+
       width: 100%;
-      border: 0;
+
+      border: none;
+
+      border-radius: 14px;
+
       padding: 15px;
+
       margin-top: 15px;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: bold;
+
+      font-size: 15px;
+
+      font-weight: 800;
+
       cursor: pointer;
+
     }
 
-    .close-btn {
+
+    .close {
+
       background: #333;
+
       color: white;
+
     }
+
+
+    .close:active {
+
+      transform: scale(.98);
+
+    }
+
 
   </style>
+
 </head>
+
 
 <body>
 
-<div class="container">
+
+<div class="app">
+
+
+  <!-- LOGO -->
 
   <img
     src="logo.jpg"
     class="logo"
+    id="logo"
+    alt="Crisp Chick"
     onerror="this.style.display='none';"
   >
 
-  <h1>CRISP CHICK</h1>
+
+  <div class="brand">
+    CRISP CHICK
+  </div>
+
 
   <div class="subtitle">
     Barcode Scanner
   </div>
 
-  <div class="scanner-box">
+
+  <div class="card">
+
+
+    <div class="camera-title">
+      Arahkan kamera ke barcode
+    </div>
+
+
+    <!-- CAMERA -->
 
     <div id="reader"></div>
 
+
+    <!-- STATUS -->
+
     <div class="status">
-      Arahkan kamera ke barcode
-      <div id="result" class="code">
+
+      <div class="status-label">
+        BARCODE TERBACA
+      </div>
+
+      <div id="result">
         Menunggu barcode...
       </div>
+
     </div>
 
+
+    <!-- SUCCESS -->
+
+    <div
+      id="success"
+      class="success"
+    >
+      ✓ Barcode berhasil dikirim ke Inventory
+    </div>
+
+
+    <!-- CLOSE -->
+
     <button
-      class="close-btn"
-      onclick="closeScanner()">
+      class="close"
+      onclick="closeScanner()"
+    >
       TUTUP SCANNER
     </button>
 
+
   </div>
+
 
 </div>
 
 
+
 <script>
 
-let scanner = null;
-let scanned = false;
+
+/* =====================================================
+   VARIABLE
+===================================================== */
+
+let html5QrCode = null;
+
+let alreadyScanned = false;
 
 
-/* =========================================
-   MULAI KAMERA
-========================================= */
+/* =====================================================
+   START CAMERA
+===================================================== */
 
-function startScanner() {
+async function startCamera() {
 
-  scanner = new Html5Qrcode("reader");
 
-  scanner.start(
+  try {
 
-    {
-      facingMode: {
-        exact: "environment"
-      }
-    },
 
-    {
-      fps: 10,
+    html5QrCode =
+      new Html5Qrcode("reader");
 
-      qrbox: {
-        width: 300,
-        height: 150
+
+    await html5QrCode.start(
+
+      {
+        facingMode: "environment"
       },
 
-      aspectRatio: 1.777
-    },
 
-    function(decodedText) {
+      {
 
-      if (scanned) return;
+        fps: 10,
 
-      scanned = true;
+        qrbox: {
 
-      console.log("BARCODE:", decodedText);
+          width: 300,
 
-      document.getElementById("result").innerText =
-        decodedText;
+          height: 150
 
-      sendBarcodeToAppsScript(decodedText);
+        },
 
-    },
+        aspectRatio: 1.777
 
-    function(errorMessage) {
+      },
 
-      // Abaikan error scanning sementara
 
-    }
+      onBarcodeSuccess,
 
-  )
 
-  .then(function() {
+      onBarcodeError
 
-    console.log("Kamera berhasil dibuka");
-
-  })
-
-  .catch(function(error) {
-
-    console.error(error);
-
-    document.getElementById("result").innerText =
-      "Kamera tidak dapat dibuka";
-
-    alert(
-      "Kamera tidak dapat dibuka.\n\n" +
-      "Pastikan:\n" +
-      "1. Website menggunakan HTTPS\n" +
-      "2. Izin kamera diberikan\n" +
-      "3. Gunakan Chrome\n" +
-      "4. Kamera tidak sedang digunakan aplikasi lain"
     );
 
-  });
+
+    console.log(
+      "CRISP CHICK CAMERA: AKTIF"
+    );
+
+
+  }
+
+
+  catch(error) {
+
+
+    console.error(
+      "CAMERA ERROR:",
+      error
+    );
+
+
+    document.getElementById(
+      "result"
+    ).innerText =
+      "Kamera gagal dibuka";
+
+
+    alert(
+
+      "Kamera tidak dapat dibuka.\n\n" +
+
+      "Pastikan:\n" +
+
+      "✓ Website menggunakan HTTPS\n" +
+
+      "✓ Izin kamera diberikan\n" +
+
+      "✓ Gunakan Google Chrome\n" +
+
+      "✓ Kamera tidak sedang dipakai aplikasi lain"
+
+    );
+
+  }
 
 }
 
 
-/* =========================================
-   KIRIM BARCODE KE APPS SCRIPT
-========================================= */
 
-function sendBarcodeToAppsScript(code) {
+/* =====================================================
+   BARCODE BERHASIL DIBACA
+===================================================== */
 
-  if (!window.opener) {
+async function onBarcodeSuccess(decodedText) {
 
-    alert(
-      "Scanner tidak menemukan halaman Crisp Chick Inventory."
-    );
+
+  /* Cegah scan berkali-kali */
+
+  if (alreadyScanned) {
 
     return;
 
   }
 
-  window.opener.postMessage(
 
-    {
-      type: "CRISP_CHICK_BARCODE",
-      code: code
-    },
+  alreadyScanned = true;
 
-    "https://script.google.com"
 
+  const barcode =
+    String(decodedText || "")
+      .trim();
+
+
+  console.log(
+    "BARCODE TERBACA:",
+    barcode
   );
 
-  setTimeout(function() {
 
-    closeScanner();
+  /* Tampilkan */
 
-  }, 700);
+  document.getElementById(
+    "result"
+  ).innerText = barcode;
 
-}
 
+  /* Stop kamera */
 
-/* =========================================
-   TUTUP SCANNER
-========================================= */
+  try {
 
-function closeScanner() {
-
-  if (scanner) {
-
-    scanner.stop()
-      .then(function() {
-
-        scanner.clear();
-
-        window.close();
-
-      })
-      .catch(function() {
-
-        window.close();
-
-      });
-
-  } else {
-
-    window.close();
+    await html5QrCode.stop();
 
   }
 
+  catch(error) {
+
+    console.log(
+      "Scanner stop:",
+      error
+    );
+
+  }
+
+
+  /* Kirim ke Apps Script */
+
+  sendBarcode(barcode);
+
 }
 
 
-/* =========================================
-   JALANKAN KAMERA
-========================================= */
+
+/* =====================================================
+   ERROR SCAN
+===================================================== */
+
+function onBarcodeError(errorMessage) {
+
+  // Jangan tampilkan error scanning.
+  // html5-qrcode akan terus mencoba membaca.
+
+}
+
+
+
+/* =====================================================
+   KIRIM BARCODE KE INVENTORY
+===================================================== */
+
+function sendBarcode(barcode) {
+
+
+  console.log(
+    "MENGIRIM BARCODE:",
+    barcode
+  );
+
+
+  /* Pastikan scanner dibuka dari Inventory */
+
+  if (!window.opener) {
+
+
+    alert(
+
+      "Scanner tidak terhubung ke Crisp Chick Inventory.\n\n" +
+
+      "Buka scanner melalui tombol SCAN BARCODE di Inventory."
+
+    );
+
+
+    alreadyScanned = false;
+
+    return;
+
+  }
+
+
+  /* =================================================
+     POST MESSAGE
+  ================================================= */
+
+  window.opener.postMessage(
+
+    {
+
+      type:
+        "CRISP_CHICK_BARCODE",
+
+      code:
+        barcode
+
+    },
+
+    "*"
+
+  );
+
+
+  console.log(
+    "BARCODE TERKIRIM:",
+    barcode
+  );
+
+
+  /* Tampilkan sukses */
+
+  document.getElementById(
+    "success"
+  ).style.display = "block";
+
+
+  /* Tutup scanner setelah 1 detik */
+
+  setTimeout(
+
+    function() {
+
+      window.close();
+
+    },
+
+    1000
+
+  );
+
+}
+
+
+
+/* =====================================================
+   CLOSE
+===================================================== */
+
+async function closeScanner() {
+
+
+  try {
+
+
+    if (html5QrCode) {
+
+      await html5QrCode.stop();
+
+    }
+
+
+  }
+
+  catch(error) {
+
+    console.log(error);
+
+  }
+
+
+  window.close();
+
+}
+
+
+
+/* =====================================================
+   START
+===================================================== */
 
 window.addEventListener(
   "load",
   function() {
 
-    startScanner();
+    startCamera();
 
   }
 );
 
+
 </script>
 
+
 </body>
+
 </html>
